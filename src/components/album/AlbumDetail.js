@@ -6,6 +6,10 @@ import { useMember } from '@lib/auth'
 import DetailPageHeader from '@components/_common/DetailPageHeader'
 import SongList from '@common/SongList'
 
+import { useRouter } from 'next/router'
+import { Fetch } from '@lib/api'
+import * as getAlbum from '@features/album/services'
+
 AlbumDetailPage.defaultProps = {
   data: {
     title: 'KILL THIS LOVE',
@@ -50,6 +54,10 @@ AlbumDetailPage.defaultProps = {
 function AlbumDetailPage({ data }) {
   const { token } = useMember()
 
+  const {
+    query: { id },
+  } = useRouter()
+
   if (token === null) {
     return null
   }
@@ -57,10 +65,20 @@ function AlbumDetailPage({ data }) {
   return (
     <Flex flexWrap="wrap" css={{ padding: '60px 120px' }}>
       <Box width={1 / 3}>
-        <DetailPageHeader data={data} />
+        <Fetch service={() => getAlbum.getAlbumById(id, { token: token })}>
+          {({ data }) => {
+            return <DetailPageHeader data={data.data} />
+          }}
+        </Fetch>
       </Box>
       <Box width={2 / 3}>
-        <SongList tracks={data.tracks} />
+        <Fetch service={() => getAlbum.getAlbumById(id, { token: token })}>
+          {({ data }) => {
+            console.log(data.data.tracks)
+
+            return <SongList tracks={data.data.tracks} />
+          }}
+        </Fetch>
       </Box>
     </Flex>
   )
