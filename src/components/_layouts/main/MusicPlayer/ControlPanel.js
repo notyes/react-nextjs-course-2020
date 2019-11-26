@@ -37,7 +37,6 @@ function ControlPanel({ playerStore }) {
   const { playing } = playerStore.nowPlaying
 
   const statusBtn = !playing ? 'play' : 'pause'
-
   return (
     <Flex>
       <Box>
